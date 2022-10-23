@@ -1,0 +1,9 @@
+var int a
+read a
+
+var int b
+read b
+
+let a = 5
+
+print a * b

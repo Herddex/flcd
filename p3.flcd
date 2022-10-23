@@ -1,0 +1,21 @@
+const array[char] NON_PRIME="Not a prime"
+const array[char] PRIME="Prime"
+
+var int n
+read n
+
+if n<=1 then
+	print NON_PRIME
+elif n == 2 then
+	print PRIME
+else
+	var int d
+	let d = 2
+	while d * d <= n do
+		if n%d == 0 then
+			print NON_PRIME
+			break
+		end
+		let d = d + 2
+	end
+end

@@ -1,0 +1,16 @@
+var int a
+read a
+
+var int b
+read b
+
+var int diff
+let diff = a - b
+
+if diff>0 then
+	print "Positive"
+elif diff==0
+	print "Zero"
+else
+	print "Negative"
+end

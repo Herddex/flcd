@@ -16,7 +16,7 @@ pub struct SymbolTable<'a> {
     next_code: u32
 }
 
-const INITIAL_TABLE_SIZE: usize = 4;
+const INITIAL_TABLE_SIZE: usize = 7;
 const LOAD_FACTOR: f64 = 0.7;
 
 impl<'a> SymbolTable<'a> {
@@ -74,7 +74,7 @@ impl<'a> SymbolTable<'a> {
     fn resize(&mut self) {
         let old_layout = Layout::array::<PtrHashNode>(self.table_size).unwrap();
 
-        self.table_size *= 2;
+        self.table_size = self.table_size * 2 + 1;
         let new_layout = Layout::array::<PtrHashNode>(self.table_size).unwrap();
         let new_table = unsafe {
             slice::from_raw_parts_mut(alloc_zeroed(new_layout) as *mut PtrHashNode, self.table_size)

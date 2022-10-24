@@ -1,12 +1,12 @@
 mod symbol_table;
 mod classifier;
-mod tokens;
+mod predefined_tokens;
 mod scanner;
 
 use std::env;
 use crate::classifier::Classifier;
 use crate::scanner::Scanner;
-use crate::tokens::Tokens;
+use crate::predefined_tokens::PredefinedTokens;
 
 fn main() {
     let args: Vec<String> = env::args().collect();
@@ -24,7 +24,7 @@ fn main() {
     };
     dbg!(&scanner.scanned_tokens);
 
-    let predefined_tokens = match Tokens::new("tokens.txt") {
+    let predefined_tokens = match PredefinedTokens::new("tokens.txt") {
         Ok(tokens) => tokens,
         Err(error) => {
             println!("Could not read predefined tokens from tokens.txt: {}", error);

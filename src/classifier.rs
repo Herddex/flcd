@@ -1,12 +1,12 @@
 use crate::symbol_table::SymbolTable;
-use crate::tokens::Tokens;
+use crate::predefined_tokens::PredefinedTokens;
 
 pub struct Classifier<'a> {
-    tokens: &'a Tokens
+    tokens: &'a PredefinedTokens
 }
 
 impl<'a> Classifier<'a> {
-    pub fn new(tokens: &'a Tokens) -> Classifier {
+    pub fn new(tokens: &'a PredefinedTokens) -> Classifier {
         Classifier {
             tokens
         }

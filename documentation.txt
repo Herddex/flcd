@@ -1,0 +1,13 @@
+# Repository:
+https://github.com/Herddex/flcd
+# Compilation and run instructions:
+Download the Rust toolkit, clone the repository.
+Execute 'cargo run -- [path to source code file]' in the repository's src folder.
+
+The project uses a scanner to separate all the tokens from the source code file, including by non-whitespace separators.
+The scanner and then the classifier determine if the program is lexically correct.
+The classifier also adds identifiers and constants into the Symbol Table.
+
+The Symbol Table is a hash table with a simple hash function (sum of char codes) and implemented with separate chaining.
+
+The program's output is all the scanned tokens, and then the Symbol Table in debug format.

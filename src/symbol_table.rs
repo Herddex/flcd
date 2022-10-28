@@ -1,7 +1,7 @@
 use std::alloc::{alloc_zeroed, dealloc, Layout};
 use std::{mem, slice};
+use std::fmt::{Display, Formatter};
 
-#[derive(Debug)]
 struct HashNode {
     key: String,
     value: u32,
@@ -9,7 +9,6 @@ struct HashNode {
 }
 type PtrHashNode = Option<Box<HashNode>>;
 
-#[derive(Debug)]
 pub struct SymbolTable<'a> {
     table: &'a mut [Option<Box<HashNode>>],
     table_size: usize,
@@ -104,5 +103,19 @@ impl<'a> Drop for SymbolTable<'a> {
         unsafe {
             dealloc(self.table.as_mut_ptr() as *mut u8, layout)
         }
+    }
+}
+
+impl<'a> Display for SymbolTable<'a> {
+    fn fmt(&self, f: &mut Formatter<'_>) -> std::fmt::Result {
+        for current_list in self.table.iter() {
+            let mut current_node_ptr = current_list;
+            while let Some(current_node) = current_node_ptr.as_ref() {
+                write!(f, "-> [{}: {}]", current_node.key, current_node.value)?;
+                current_node_ptr = &current_node.next_node;
+            }
+            write!(f, "-> NIL\n")?
+        }
+        Ok(())
     }
 }

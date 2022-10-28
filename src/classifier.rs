@@ -1,28 +1,46 @@
-use crate::symbol_table::SymbolTable;
+use std::error::Error;
+use std::fmt::{Debug, Display, Formatter};
 use crate::predefined_tokens::PredefinedTokens;
+use regex::Regex;
 
-pub struct Classifier<'a> {
-    tokens: &'a PredefinedTokens
+pub struct LexicalError {
+    message: String
 }
 
-impl<'a> Classifier<'a> {
-    pub fn new(tokens: &'a PredefinedTokens) -> Classifier {
-        Classifier {
-            tokens
+impl LexicalError {
+    pub fn new(message: String) -> LexicalError {
+        LexicalError {
+            message
         }
     }
+}
 
-    pub fn classify(&self, tokens: Vec<String>) -> SymbolTable {
-        let mut symbol_table = SymbolTable::new();
+impl Debug for LexicalError {
+    fn fmt(&self, f: &mut Formatter<'_>) -> std::fmt::Result {
+        write!(f, "{}", self.message)
+    }
+}
 
-        tokens.iter()
-            .filter(|token| !self.tokens.contains(token))
-            .for_each(|token| {
-                if symbol_table.search(token).is_none() {
-                    symbol_table.insert(token);
-                }
-            });
+impl Display for LexicalError {
+    fn fmt(&self, f: &mut Formatter<'_>) -> std::fmt::Result {
+        write!(f, "{}", self.message)
+    }
+}
 
-        symbol_table
+impl Error for LexicalError {}
+
+pub fn classify(token: &str, predefined_tokens: &PredefinedTokens) -> Result<u32, LexicalError> {
+    if let Some(pif_code) = predefined_tokens.get(token) {
+        Ok(*pif_code)
+    } else if Regex::new(r"^[a-zA-Z]([a-zA-Z]|\d|_)*$").unwrap().is_match(token) {
+        Ok(0)
+    } else if Regex::new(r"^\d+$").unwrap().is_match(token) {
+        Ok(1)
+    } else if Regex::new("^\"[^\"]*\"$").unwrap().is_match(token) {
+        Ok(1)
+    } else if Regex::new("^'[^']'$").unwrap().is_match(token) {
+        Ok(1)
+    } else {
+        Err(LexicalError { message: String::from("Lexical error at token: ".to_owned() + token) })
     }
 }

@@ -4,10 +4,14 @@ https://github.com/Herddex/flcd
 Download the Rust toolkit, clone the repository.
 Execute 'cargo run -- [path to source code file]' in the repository's src folder.
 
-The project uses a scanner to separate all the tokens from the source code file, including by non-whitespace separators.
-The scanner and then the classifier determine if the program is lexically correct.
-The classifier also adds identifiers and constants into the Symbol Table.
+The project uses a tokenizer to separate all the tokens from the source code file, including by non-whitespace separators.
+The classifier takes in tokens and classifies them, as well as finding lexical errors.
+The scanner feeds the tokens from the tokenizer into the classifier and saves and identifiers and constants into the ST.
+It also builds the PIF, which it returns at the end.
+Finally, the PIF and the ST are pretty printed to a file.
 
+# Implementation details:
 The Symbol Table is a hash table with a simple hash function (sum of char codes) and implemented with separate chaining.
-
-The program's output is all the scanned tokens, and then the Symbol Table in debug format.
+The tokenizer reads all the contents of the source file into a string and is implemented as an iterator over the tokens.
+The classifier uses regular expressions to determine the type of token or return a lexical error if the token cannot be classified.
+The PIF is a simply linked list of three-tuples: (token, type, symbol_table_id - if any)

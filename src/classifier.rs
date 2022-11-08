@@ -2,9 +2,10 @@ use std::error::Error;
 use std::fmt::{Debug, Display, Formatter};
 use crate::predefined_tokens::PredefinedTokens;
 use regex::Regex;
+use crate::finite_automata::FiniteAutomaton;
 
 pub struct LexicalError {
-    message: String
+    message: String,
 }
 
 impl LexicalError {
@@ -29,12 +30,13 @@ impl Display for LexicalError {
 
 impl Error for LexicalError {}
 
-pub fn classify(token: &str, predefined_tokens: &PredefinedTokens) -> Result<u32, LexicalError> {
+pub fn classify(token: &str, predefined_tokens: &PredefinedTokens, identifier_fa: &FiniteAutomaton,
+                integer_constant_fa: &FiniteAutomaton) -> Result<u32, LexicalError> {
     if let Some(pif_code) = predefined_tokens.get(token) {
         Ok(*pif_code)
-    } else if Regex::new(r"^[a-zA-Z]([a-zA-Z]|\d|_)*$").unwrap().is_match(token) {
+    } else if identifier_fa.verify(token) {
         Ok(0)
-    } else if Regex::new(r"^\d+$").unwrap().is_match(token) {
+    } else if integer_constant_fa.verify(token) {
         Ok(1)
     } else if Regex::new("^\"[^\"]*\"$").unwrap().is_match(token) {
         Ok(1)

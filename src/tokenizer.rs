@@ -15,16 +15,16 @@ impl Iterator for Tokenizer {
             if *char == '"' || *char == '\'' {
                 self.char_index -= 1;
                 let constant = self.read_delimited_constant();
-                return self.return_result(constant);
+                return self.prepare_result(constant);
             } else if "=<>!".contains(*char) {
                 if let Some(next_char) = self.scanned_program.get(self.char_index) {
                     if *next_char == '=' {
-                        return self.return_result(format!("{}=", char));
+                        return self.prepare_result(format!("{}=", char));
                     }
                 }
-                return self.return_result(char.to_string());
+                return self.prepare_result(char.to_string());
             } else if "()[]{},:.+-*/%".contains(*char) {
-                return self.return_result(char.to_string());
+                return self.prepare_result(char.to_string());
             } else if char.is_whitespace() {
                 if *char == '\n' {
                     self.line_number += 1
@@ -34,12 +34,13 @@ impl Iterator for Tokenizer {
                 next_token.push(*char);
                 while let Some(char) = self.scanned_program.get(self.char_index) {
                     if char.is_whitespace() || "()[]{},:.+-*/%=<>!'\"".contains(*char) {
-                        return self.return_result(next_token);
+                        return self.prepare_result(next_token);
                     } else {
                         next_token.push(self.scanned_program[self.char_index]);
                         self.char_index += 1;
                     }
                 }
+                return self.prepare_result(next_token);
             }
         }
         None
@@ -55,7 +56,7 @@ impl Tokenizer {
         })
     }
 
-    pub fn return_result(&self, token: String) -> Option<(String, u32)> {
+    pub fn prepare_result(&self, token: String) -> Option<(String, u32)> {
         Some((token, self.line_number))
     }
 

@@ -1,0 +1,12 @@
+# Repository:
+https://github.com/Herddex/flcd
+
+Alphabet:
+! “ # $ % & ‘ ( ) * + , - . / 0-9 : ; < = > ? @ A-Z [ ] \ ^ _ ` a-z { } | ~
+symbol ::= any character from the alphabet
+state ::= symbol
+initial_state ::= state
+final_state ::= state
+alphabet_symbol ::= symbol
+transition ::= state alphabet_symbol state
+fa ::= state { " " state } "\n" initial_state "\n" final_state { " " final_state } "\n" alphabet_symbol { " " alphabet_symbol } "\n" "\n" transition { "\n" transition }
